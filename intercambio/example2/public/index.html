@@ -1,2 +1,36 @@
-<h1>Hello World</h1>
-<image src='Avatar.png'></image>
+<h1>Web dev training</h1>
+<h2>Exercise 2: fetch, get, post</h2>
+<image src='Avatar.png' width="200px"></image>
+
+<input placeholder="Type in something" id="userInput"></input>
+
+<script>
+
+  window.addEventListener('load', () => {
+    window.fetch('path/to/someInformation')
+      .then(response => response.text())
+      .then(data => {
+        const p = document.createElement('p')
+        p.innerText = `Info from back end on loading: ${data}`
+        document.body.appendChild(p)
+      })
+  })
+
+
+  document.querySelector('#userInput').addEventListener('change', async (event) => {
+    response = await window.fetch('userInput', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({ input: event.target.value })
+    })
+    const data = await response.json()
+    const p = document.createElement('p')
+    p.innerText = `Info from back end when you hit enter on the input: ${data.message}`
+    document.body.appendChild(p)
+
+  })
+
+</script>
