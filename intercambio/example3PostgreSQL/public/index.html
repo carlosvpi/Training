@@ -1,0 +1,109 @@
+<head>
+  <style>
+    .border {
+      border: 1px solid black;
+      padding: 5px;
+    }
+    .border h3 {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+    .alert {
+      color: red;
+    }
+    #identification-panel, #identified-panel {
+      display: none;
+    }
+    #identification-panel.visible, #identified-panel.visible {
+      display: block;
+    }
+  </style>
+</head>
+
+<h1>Web dev training</h1>
+<h2>Exercise 3: connect with db</h2>
+
+
+<div id="identification-panel" class="border visible">
+  <h3>Identify yourself</h3>
+  <label for="name-input">Name: </label><input id="name-input" placeholder="name"></input>
+  <br />
+  <label for="password-input">Password: </label><input id="password-input" type="password"></input>
+  <br />
+  <button id="login-button">Log in</button> or <button id="signup-button">Sign up</button>
+  <p id="response-p" class="alert"></p>
+</div>
+
+<div id="identified-panel">
+  <h3>Welcome <span id="name-span"></span></h3>
+  <p>Your id is <span id="id-span"></span></p>
+  <button id="logout-button">Log out</button>
+</div>
+
+
+<script>
+
+  const nameInput = document.querySelector('#name-input')
+  const passwordInput = document.querySelector('#password-input')
+  const responseP = document.querySelector('#response-p')
+  const identificationForm = document.querySelector('#identification-panel')
+  const identifiedPanel = document.querySelector('#identified-panel')
+  const nameSpan = document.querySelector('#name-span')
+  const idSpan = document.querySelector('#id-span')
+
+  document.querySelector('#login-button').addEventListener('click', async () => {
+    const request = await window.fetch('/login', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({ name: nameInput.value, password: passwordInput.value })
+    })
+    if (request.status === 500) {
+      alert('ERROR')
+      console.error('Error')
+      return
+    }
+    const response = await request.json()
+    if (response.type === 'error') {
+      console.error(response.error)
+      responseP.innerText = response.error
+      return
+    }
+    identificationForm.classList.toggle('visible')
+    identifiedPanel.classList.toggle('visible')
+    nameSpan.innerText = response.data.name
+    idSpan.innerText = response.data.id
+  })
+  document.querySelector('#signup-button').addEventListener('click', async () => {
+    const request = await window.fetch('/signup', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({ name: nameInput.value, password: passwordInput.value })
+    })
+    if (request.status === 500) {
+      alert('ERROR')
+      console.error('Error')
+      return
+    }
+    const response = await request.json()
+    if (response.type === 'error') {
+      console.error(response.error)
+      responseP.innerText = response.error
+      return
+    }
+    identificationForm.classList.toggle('visible')
+    identifiedPanel.classList.toggle('visible')
+    nameSpan.innerText = response.data.name
+    idSpan.innerText = response.data.id
+  })
+  document.querySelector('#logout-button').addEventListener('click', async () => {
+    identificationForm.classList.toggle('visible')
+    identifiedPanel.classList.toggle('visible')
+  })
+
+</script>
